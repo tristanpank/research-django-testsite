@@ -9,6 +9,7 @@ urlpatterns = [
     path('users/create/', views.CreateUser.as_view()),
     path('users/current/', views.CurrentUserView.as_view()),
     path('users/<int:pk>/', views.UserDetail.as_view()),
+    path('files/', views.FilePostViewSet.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

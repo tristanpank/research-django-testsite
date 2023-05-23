@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import blogPost
+from api.models import blogPost, filePost
 from django.contrib.auth.models import User
 
 class blogPostSerializer(serializers.ModelSerializer):
@@ -37,3 +37,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password']
+
+class FilePostSerializer(serializers.ModelSerializer):
+    
+    owner = serializers.ReadOnlyField(source='owner.username')
+    owner_id = serializers.ReadOnlyField(source='owner.id')
+    file_url = serializers.FileField(required=False)
+
+    class Meta:
+        model = filePost
+        fields = ['id', 'owner', 'owner_id', 'title', 'file_url']
