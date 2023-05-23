@@ -77,6 +77,54 @@ function AddBlogPost({ user, setUser, setTriggerUseEffect, triggerUseEffect }) {
   )
 }
 
+function AddFilePost({user}) {
+  const [data, setData] = useState({
+    title: "",
+    file_url: "",
+  });
+  const handleImageChange = (e) => {
+    let newData = {...data};
+    newData["file_url"] = e.target.files[0];
+    newData["title"] = e.target.files[0].name;
+    setData(newData);
+    console.log(data);
+    console.log(e.target.files[0])
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    console.log(e.target);
+    let formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('file_url', data.file_url);
+
+    const config = {
+      method: 'post',
+      url: `http://127.0.0.1:8000/api/files/`,
+      headers: { 
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer ' + user.token.access
+      },
+      data : formData,
+    };
+
+    const {responseData} = await axios(config);
+    console.log(responseData);
+
+  }
+
+  return (
+    <>
+      <div>Add Files</div>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor='fileURL'>Upload File</label>
+        <input type='file' id='fileURL' accept='image/jpeg,image/png,image/svg' onChange={handleImageChange}></input> 
+        <button type='submit'>Upload</button>
+      </form>
+    </>
+  )
+}
+
 
 export default function BlogPosts({ user, setUser }) {
   const [triggerUseEffect, setTriggerUseEffect] = useState(0);
@@ -85,6 +133,7 @@ export default function BlogPosts({ user, setUser }) {
     <>
       <BlogPostsList user={user} triggerUseEffect={triggerUseEffect} />
       <AddBlogPost user={user} setUser={setUser} triggerUseEffect={triggerUseEffect} setTriggerUseEffect={setTriggerUseEffect} />
+      <AddFilePost user={user} />
     </>
   )
 }
