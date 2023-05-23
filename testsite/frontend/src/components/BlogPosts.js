@@ -118,7 +118,7 @@ function AddFilePost({user}) {
       <div>Add Files</div>
       <form onSubmit={handleSubmit}>
         <label htmlFor='fileURL'>Upload File</label>
-        <input type='file' id='fileURL' accept='image/jpeg,image/png,image/svg' onChange={handleImageChange}></input> 
+        <input type='file' id='fileURL' accept='image/jpeg,image/png,image/svg,video/mp4' onChange={handleImageChange}></input> 
         <button type='submit'>Upload</button>
       </form>
     </>
