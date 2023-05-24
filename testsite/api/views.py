@@ -51,10 +51,16 @@ class CurrentUserView(APIView):
         return Response(serializer.data)
     
 class FilePostViewSet(generics.ListCreateAPIView):
-    queryset = filePost.objects.all()
     serializer_class = FilePostSerializer
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+      num_of_videos = self.request.query_params.get('num_of_videos')
+      queryset = filePost.objects.all()
+      if num_of_videos is not None:
+          queryset = queryset[:int(num_of_videos)]
+      return queryset
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

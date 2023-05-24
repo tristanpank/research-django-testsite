@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import Login from './components/Login';
 import BlogPosts from './components/BlogPosts';
+import VideoDisplay from './components/VideoDisplay';
 
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
       <>
         <div>Logged in</div>
         <BlogPosts user={user} setUser={setUser} />
+        <VideoDisplay />
       </>
     )
   }
