@@ -10,9 +10,17 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import viewsets
 
 class BlogList(generics.ListCreateAPIView):
-    queryset = blogPost.objects.all()
+    
     serializer_class = blogPostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+      num_of_posts = self.request.query_params.get('num_of_posts')
+      queryset = blogPost.objects.all().order_by('created')
+      if num_of_posts is not None:
+          queryset = queryset[:int(num_of_posts)]
+      return queryset
+
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -50,3 +58,4 @@ class FilePostViewSet(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
