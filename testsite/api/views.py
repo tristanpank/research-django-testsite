@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import viewsets
+import subprocess
+from django.conf import settings
 
 class BlogList(generics.ListCreateAPIView):
     
@@ -16,7 +18,7 @@ class BlogList(generics.ListCreateAPIView):
 
     def get_queryset(self):
       num_of_posts = self.request.query_params.get('num_of_posts')
-      queryset = blogPost.objects.all().order_by('created')
+      queryset = blogPost.objects.all().order_by('created') 
       if num_of_posts is not None:
           queryset = queryset[:int(num_of_posts)]
       return queryset
@@ -56,6 +58,7 @@ class FilePostViewSet(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+      print(str(settings.BASE_DIR)[:-9])
       num_of_videos = self.request.query_params.get('num_of_videos')
       queryset = filePost.objects.all()
       if num_of_videos is not None:
@@ -63,5 +66,16 @@ class FilePostViewSet(generics.ListCreateAPIView):
       return queryset
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        new_file = serializer.save(owner=self.request.user)
+        if new_file.title[-3:] == "mov":
+            image_path = str(settings.BASE_DIR)[:-9] + '\\media\\images\\'
+            mp4_name = new_file.title[:-3] + "mp4"
+            ffmpeg_command = 'ffmpeg i ' + image_path + str(new_file.title) + ' ' + image_path + mp4_name
+            print(ffmpeg_command)
+            subprocess.call('ffmpeg i ' + image_path + str(new_file.title) + ' ' + image_path + mp4_name)
+            new_file.title = mp4_name
+            new_file.file_url = str(new_file.file_url)[:-3] + "mp4"
+            new_file.save()
+
+        
 

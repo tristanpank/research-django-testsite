@@ -19,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
+print( "media root", MEDIA_ROOT)
+
 MEDIA_URL = '/media/'
 
 # Quick-start development settings - unsuitable for production
